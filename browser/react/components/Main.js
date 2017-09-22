@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import axios from 'axios'
 import StatefulAlbums from './StatefulAlbums';
 import SingleAlbum from './SingleAlbum';
 import AllArtists from './AllArtists';
@@ -8,7 +9,7 @@ import Sidebar from './Sidebar';
 import Player from './Player';
 import NewPlaylist from './NewPlaylist'
 import Playlist from './Playlist'
-import axios from 'axios'
+
 
 export default class Main extends Component {
   constructor(){
