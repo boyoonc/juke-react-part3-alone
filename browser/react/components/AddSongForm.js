@@ -6,12 +6,29 @@ export default class AddSongForm extends Component{
 		super();
 		this.state = {
 			songs: [],
-			songId: 1
+			songId: 1,
+			showError: false
 		}
 		this.handleChange = this.handleChange.bind(this)
+		this.handleSubmit = this.handleSubmit.bind(this)
 	}
 
-	handleChange(event){}
+	handleChange(event){
+		console.log(event.target.value)
+		this.setState({songId: event.target.value, showError:false})
+	}
+
+	handleSubmit(event){
+		event.preventDefault()
+		const songId = this.state.songId
+		const playlistId = this.props.playlist.id
+		console.log(songId, playlistId)
+		// const promiseThatAxiosPostReturns = this.props.addSongToPlaylist(playlistId, songId)
+		this.props.addSongToPlaylist(playlistId, songId)
+			.catch(err => {
+				this.setState({showError:true})
+			})
+	}
 
 	componentDidMount(){
 		axios.get('/api/songs')
@@ -24,13 +41,18 @@ export default class AddSongForm extends Component{
 	render(){
 		return(
 			<div className="well">
-			    <form className="form-horizontal" noValidate name="songSelect">
+			    <form onSubmit={this.handleSubmit} className="form-horizontal" noValidate name="songSelect">
 			      <fieldset>
 			        <legend>Add to Playlist</legend>
+			        {
+			        	this.state.showError ?
+			        	<div className="alert alert-danger">Song is a duplicate</div> : null
+			        }
+			        
 			        <div className="form-group">
 			          <label htmlFor="song" className="col-xs-2 control-label">Song</label>
 			          <div className="col-xs-10">
-			            <select className="form-control" name="song">
+			            <select onChange = {this.handleChange} className="form-control" name="song">
 			              {
 			              	this.state.songs.map(song => {
 			              		return(

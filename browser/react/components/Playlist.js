@@ -10,6 +10,21 @@ export default class Playlist extends Component{
 		this.state={
 			playlist : {}
 		}
+		this.addSongToPlayist = this.addSongToPlayist.bind(this)
+	}
+
+	addSongToPlayist (playlistId, songId){
+		return axios.post(`/api/playlists/${playlistId}/songs`, {
+			id: songId //this is what this route expects
+		})
+		.then(res => res.data)
+		.then(song => {
+			const playlist = this.state.playlist
+			const songs = playlist.songs
+			const newSongs = [...songs, song]
+			const newPlaylist = Object.assign({}, playlist, {songs: newSongs})
+			this.setState({ playlist : newPlaylist })
+		})
 	}
 
 	fetchPlaylistById(playlistId){
@@ -28,7 +43,7 @@ export default class Playlist extends Component{
 	}
 
 	componentWillReceiveProps(nextProps){
-		console.log('am i here?')
+		console.log('componentWillReceiveProps')
 		const currentProps = this.props;
 		const nextPlaylistId = nextProps.match.params.playlistId
 		const currentPlaylistId = currentProps.match.params.playlistId
@@ -45,7 +60,7 @@ export default class Playlist extends Component{
 			  <Songs songs={playlist.songs} /> {/** Hooray for reusability! */}
 			  { playlist.songs && !playlist.songs.length && <small>No songs.</small> }
 			  <hr />
-			  <AddSongForm />
+			  <AddSongForm addSongToPlaylist={this.addSongToPlayist} playlist={playlist} />
 			</div>
 			)
 	}
